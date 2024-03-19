@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              94list-laravel-tampermonkey
 // @namespace         https://github.com/huankong233/94list-laravel-tampermonkey
-// @version           0.0.2
+// @version           0.0.3
 // @author            huan_kong
 // @description       对接 94list-laravel 的油猴脚本
 // @license           MIT
