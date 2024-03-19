@@ -1,0 +1,9 @@
+{
+  "name": "94list-laravel-tampermonkey",
+  "version": "0.0.1",
+  "scripts": {},
+  "devDependencies": {
+    "@types/jquery": "^3.5.29",
+    "@types/tampermonkey": "^5.0.2"
+  }
+}
