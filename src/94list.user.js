@@ -116,7 +116,7 @@ $(async function () {
   }
 
   const getPt = () => {
-    if (document.location.href.indexOf('.baidu.com/disk/home')) return 'home'
+    if (document.location.href.indexOf('.baidu.com/disk/home') > 0) return 'home'
     if (document.location.href.indexOf('.baidu.com/disk/main') > 0) return 'main'
     return ''
   }
