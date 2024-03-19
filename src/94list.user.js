@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              94list-laravel-tampermonkey
 // @namespace         https://github.com/huankong233/94list-laravel-tampermonkey
-// @version           0.0.3
+// @version           0.0.4
 // @author            huan_kong
 // @description       对接 94list-laravel 的油猴脚本
 // @license           MIT
@@ -21,6 +21,8 @@
 // @grant             GM_addStyle
 // @grant             GM_setClipboard
 // @grant             GM_registerMenuCommand
+// @grant             GM_setValue
+// @grant             GM_getValue
 // @downloadURL https://update.greasyfork.org/scripts/490248/94list-laravel-tampermonkey.user.js
 // @updateURL https://update.greasyfork.org/scripts/490248/94list-laravel-tampermonkey.meta.js
 // ==/UserScript==
@@ -31,35 +33,30 @@ $(async function () {
       title: '⚙️ 设置',
       html: `<div>
         <p>94list-laravel-site-url</p>
-        <input type="text" id="siteUrl" value=${
-          localStorage.getItem('94list-laravel-site-url') ?? ''
-        }>
+        <input type="text" id="siteUrl" value=${GM_getValue('94list-laravel-site-url', '')}>
         <p>94list-laravel-site-password</p>
-        <input type="text" id="sitePassword" value=${
-          localStorage.getItem('94list-laravel-site-password') ?? ''
-        }>
+        <input type="text" id="sitePassword" value=${GM_getValue(
+          '94list-laravel-site-password',
+          ''
+        )}>
         <p>94list-laravel-site-aria2-host</p>
-        <input type="text" id="siteAriaHost" value=${
-          localStorage.getItem('94list-laravel-site-aria2-host') ?? ''
-        }>
+        <input type="text" id="siteAriaHost" value=${GM_getValue(
+          '94list-laravel-site-aria2-host',
+          ''
+        )}>
         <p>94list-laravel-site-aria2-secret</p>
-        <input type="text" id="siteAriaSecret" value=${
-          localStorage.getItem('94list-laravel-site-aria2-secret') ?? ''
-        }>
+        <input type="text" id="siteAriaSecret" value=${GM_getValue(
+          '94list-laravel-site-aria2-secret',
+          ''
+        )}>
       </div>`,
       icon: 'info',
       showConfirmButton: true
     }).then(() => {
-      localStorage.setItem('94list-laravel-site-url', document.querySelector('#siteUrl').value)
-      localStorage.setItem(
-        '94list-laravel-site-password',
-        document.querySelector('#sitePassword').value
-      )
-      localStorage.setItem(
-        '94list-laravel-site-aria2-host',
-        document.querySelector('#siteAriaHost').value
-      )
-      localStorage.setItem(
+      GM_setValue('94list-laravel-site-url', document.querySelector('#siteUrl').value)
+      GM_setValue('94list-laravel-site-password', document.querySelector('#sitePassword').value)
+      GM_setValue('94list-laravel-site-aria2-host', document.querySelector('#siteAriaHost').value)
+      GM_setValue(
         '94list-laravel-site-aria2-secret',
         document.querySelector('#siteAriaSecret').value
       )
@@ -68,7 +65,7 @@ $(async function () {
   })
 
   function setLocalStorage(key, url) {
-    localStorage.setItem(key, url)
+    GM_setValue(key, url)
     location.reload()
   }
 
@@ -82,8 +79,32 @@ $(async function () {
     )
   }
 
-  const siteUrl = localStorage.getItem('94list-laravel-site-url')
-  const password = localStorage.getItem('94list-laravel-site-password')
+  const getPt = () => {
+    if (document.location.href.indexOf('.baidu.com/disk/home') > 0) return 'home'
+    if (document.location.href.indexOf('.baidu.com/disk/main') > 0) return 'main'
+    return ''
+  }
+  const pt = getPt()
+
+  GM_addStyle(
+    `input{outline-style:none;border:1px solid #c0c4cc;border-radius:5px;width:100%;height:100%;padding:0;padding:10px 15px;box-sizing:border-box}.hk table{width:100%;border-collapse:collapse;margin:25px 0;font-size:.9em;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-width:400px;box-shadow:0 0 20px rgba(0,0,0,0.15)}.hk thead tr{background-color:#009879;color:#fff;text-align:center;}.hk .line{line-height:60px}.hk th,.hk td{padding:12px 15px;width:138px;height:85px;overflow:overlay;display:inline-block;}.hk tbody tr{border-bottom:1px solid #ddd}.hk tbody tr:nth-of-type(even){background-color:#f3f3f3}.hk td{height:100px;}.hk td.line{line-height:75px;}.homeButton button{display: inline-block;line-height: 1;white-space: nowrap;cursor: pointer;background: #fff;border: 1px solid #dcdfe6;color: #606266;-webkit-appearance: none;text-align: center;-webkit-box-sizing: border-box;box-sizing: border-box;outline: 0;margin: 0;-webkit-transition: .1s;transition: .1s;font-weight: 500;padding: 12px 36px;font-size: 14px;border-radius: 4px;height: 32px;padding: 8px 12px;font-size: 14px;color: #fff;background-color: #ff436a;border-color: #ff436a;border-radius: 3px;text-transform: none;outline: none;border: none;margin-right:none !important;}.homeButton{display: inline-block;}`
+  )
+
+  if (pt === 'home') {
+    $('.tcuLAu').prepend(
+      '<div class="homeButton wp-s-agile-tool-bar__h-group"><button style="margin-right:10px;" id="94listDownBtn" class="u-button nd-file-list-toolbar-action-item is-need-left-sep u-button--primary u-button--default u-button--small is-has-icon  u-button--danger"><i class="iconfont icon-download"></i><span>94list-laravel</span></button></div>'
+    )
+    GM_addStyle(
+      `.hk th,.hk td{width:108px !important;height:60px !important;}.hk td{height:75px !important;}`
+    )
+  } else if (pt === 'main') {
+    $('.wp-s-agile-tool-bar__header.is-header-tool').prepend(
+      '<div class="wp-s-agile-tool-bar__h-group"><button style="margin-right:10px;" id="94listDownBtn" class="u-button nd-file-list-toolbar-action-item is-need-left-sep u-button--primary u-button--default u-button--small is-has-icon  u-button--danger"><i class="iconfont icon-download"></i><span>94list-laravel</span></button></div>'
+    )
+  }
+
+  const siteUrl = GM_getValue('94list-laravel-site-url')
+  const password = GM_getValue('94list-laravel-site-password')
 
   if (!siteUrl | (siteUrl === 'null')) {
     await Swal.fire({
@@ -113,30 +134,6 @@ $(async function () {
       html: `<input type="text" id="sitePassword">`
     })
     setLocalStorage('94list-laravel-site-password', document.querySelector('#sitePassword').value)
-  }
-
-  const getPt = () => {
-    if (document.location.href.indexOf('.baidu.com/disk/home') > 0) return 'home'
-    if (document.location.href.indexOf('.baidu.com/disk/main') > 0) return 'main'
-    return ''
-  }
-  const pt = getPt()
-
-  GM_addStyle(
-    `input{outline-style:none;border:1px solid #c0c4cc;border-radius:5px;width:100%;height:100%;padding:0;padding:10px 15px;box-sizing:border-box}.hk table{width:100%;border-collapse:collapse;margin:25px 0;font-size:.9em;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-width:400px;box-shadow:0 0 20px rgba(0,0,0,0.15)}.hk thead tr{background-color:#009879;color:#fff;text-align:center;}.hk .line{line-height:60px}.hk th,.hk td{padding:12px 15px;width:138px;height:85px;overflow:overlay;display:inline-block;}.hk tbody tr{border-bottom:1px solid #ddd}.hk tbody tr:nth-of-type(even){background-color:#f3f3f3}.hk td{height:100px;}.hk td.line{line-height:75px;}.homeButton button{display: inline-block;line-height: 1;white-space: nowrap;cursor: pointer;background: #fff;border: 1px solid #dcdfe6;color: #606266;-webkit-appearance: none;text-align: center;-webkit-box-sizing: border-box;box-sizing: border-box;outline: 0;margin: 0;-webkit-transition: .1s;transition: .1s;font-weight: 500;padding: 12px 36px;font-size: 14px;border-radius: 4px;height: 32px;padding: 8px 12px;font-size: 14px;color: #fff;background-color: #ff436a;border-color: #ff436a;border-radius: 3px;text-transform: none;outline: none;border: none;margin-right:none !important;}.homeButton{display: inline-block;}`
-  )
-
-  if (pt === 'home') {
-    $('.tcuLAu').prepend(
-      '<div class="homeButton wp-s-agile-tool-bar__h-group"><button style="margin-right:10px;" id="94listDownBtn" class="u-button nd-file-list-toolbar-action-item is-need-left-sep u-button--primary u-button--default u-button--small is-has-icon  u-button--danger"><i class="iconfont icon-download"></i><span>94list-laravel</span></button></div>'
-    )
-    GM_addStyle(
-      `.hk th,.hk td{width:108px !important;height:60px !important;}.hk td{height:75px !important;}`
-    )
-  } else if (pt === 'main') {
-    $('.wp-s-agile-tool-bar__header.is-header-tool').prepend(
-      '<div class="wp-s-agile-tool-bar__h-group"><button style="margin-right:10px;" id="94listDownBtn" class="u-button nd-file-list-toolbar-action-item is-need-left-sep u-button--primary u-button--default u-button--small is-has-icon  u-button--danger"><i class="iconfont icon-download"></i><span>94list-laravel</span></button></div>'
-    )
   }
 
   const match = /"bdstoken":"(\w+)"/.exec($('html').html())
@@ -297,7 +294,7 @@ $(async function () {
     })
 
     $('.hk button.aria').on('click', async function () {
-      let aria2Host = localStorage.getItem('94list-laravel-site-aria2-host')
+      let aria2Host = GM_getValue('94list-laravel-site-aria2-host')
       if (!aria2Host || aria2Host === 'null') {
         await Swal.fire({
           title: '请先设置 94list-laravel-site-aria2-host',
@@ -305,10 +302,10 @@ $(async function () {
         })
 
         aria2Host = document.querySelector('#siteAriaHost').value
-        localStorage.setItem('94list-laravel-site-aria2-host', aria2Host)
+        GM_setValue('94list-laravel-site-aria2-host', aria2Host)
       }
 
-      let aria2Secret = localStorage.getItem('94list-laravel-site-aria2-secret')
+      let aria2Secret = GM_getValue('94list-laravel-site-aria2-secret')
 
       await request({
         method: 'post',
