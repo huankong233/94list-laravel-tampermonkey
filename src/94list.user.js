@@ -19,6 +19,8 @@
 // @grant             GM_addStyle
 // @grant             GM_setClipboard
 // @grant             GM_registerMenuCommand
+// @downloadURL https://update.greasyfork.org/scripts/490248/94list-laravel-tampermonkey.user.js
+// @updateURL https://update.greasyfork.org/scripts/490248/94list-laravel-tampermonkey.meta.js
 // ==/UserScript==
 
 $(async function () {
