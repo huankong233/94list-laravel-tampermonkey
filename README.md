@@ -6,6 +6,10 @@
 
 这是 [94lsit-laravel](https://github.com/huankong233/94list-laravel) 的油猴代码部分
 
+## 油猴地址
+
+[https://greasyfork.org/zh-CN/scripts/490248-94list-laravel-tampermonkey](https://greasyfork.org/zh-CN/scripts/490248-94list-laravel-tampermonkey)
+
 ## 技术栈
 
 - `jquery`

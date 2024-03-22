@@ -326,7 +326,7 @@ $(async function () {
             }
           ]
         })
-      })
+      }).catch(err => alert('请求aria2失败,请检查控制台输出'))
     })
 
     $('.hk button.idm').on('click', async function () {
